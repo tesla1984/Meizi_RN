@@ -107,13 +107,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   title: {
-         fontSize: 20,
-         marginBottom: 8,
+         fontSize: 12,
          textAlign: 'center',
      },
      thumbnail: {
-         width: 53,
-         height: 81,
+         width: 100,
+         height: 100,
      },
 });
 
