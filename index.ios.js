@@ -22,7 +22,8 @@ var meiziRequest = new MeiziRequest();
 
 class Home extends Component{
 
-  _page = 0;
+  _data = new Array();
+  _page = 1;
 
   constructor(props) {
     super(props);
@@ -81,6 +82,8 @@ class Home extends Component{
               onRefresh={this._onRefresh.bind(this)}
               enable={true} />
           }
+          onEndReached={this._onLoadMore.bind(this)}
+          onEndReachedThreshold={0}
           style={styles.listView} />
       </View>
     );
@@ -88,23 +91,46 @@ class Home extends Component{
 
   _onRefresh(){
       this._page = 1;
-      //this.setState({refreshing:true});
-      this.state.refreshing = true;
-      meiziRequest.requestWithPage('All',this._page)
-        .then((results)=>{
-            this.setState({
-              refreshing:false,
-              dataSource:this.state.dataSource.cloneWithRows(results),
-            });
-        })
-        .catch((error)=>{
-          this.state.refreshing=false;
-        });
-
+      // //this.setState({refreshing:true});
+      // this.state.refreshing = true;
+      // meiziRequest.requestWithPage('All',this._page)
+      //   .then((results)=>{
+      //       this.setState({
+      //         refreshing:false,
+      //         dataSource:this.state.dataSource.cloneWithRows(results),
+      //       });
+      //   })
+      //   .catch((error)=>{
+      //     this.state.refreshing=false;
+      //   });
+      this._loadData();
   }
 
   _onLoadMore(){
+    this._page++;
+    this._loadData();
+  }
 
+  _loadData(){
+    if(this._page === 1){
+      this.state.refreshing = true;
+    }
+    meiziRequest.requestWithPage('All',this._page)
+      .then((results)=>{
+          if(this._page === 1){
+            this._data.length = 0;
+          }
+          for(var i=0;i<results.length;i++){
+            this._data.push(results[i]);
+          }
+          this.setState({
+            refreshing:false,
+            dataSource:this.state.dataSource.cloneWithRows(this._data),
+          });
+      })
+      .catch((error)=>{
+        this.state.refreshing=false;
+      });
   }
 
   _renderMeiziView(meizi){
@@ -157,16 +183,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   title: {
-         fontSize: 18,
+         fontSize: 15,
          textAlign: 'center',
          marginLeft:10,
      },
-     thumbnail: {
+  thumbnail: {
          width: 100,
          height: 100,
      },
-     listView: {
-    paddingTop: 20,
+  listView: {
     backgroundColor: '#F5FCFF',
   },
 });
