@@ -125,3 +125,52 @@ _data.push(..)
 
 [ListView组件之上拉刷新](http://www.voidcn.com/blog/hsbirenjie/article/p-6160823.html)   
 这里定义一个变量来控制footview显示，来实现上拉加载更多提示显示
+
+
+
+### 添加Tab
+
+[React-Native 之 TabBarIOS和TabBarIOS.Item使用](http://www.jianshu.com/p/fe12b466f789)
+
+TabBarIOS.Item设置systemIcon目前有下面这些值
+
+```
+Invalid UITabBarSystemItem 'system'. should be one of: (
+    bookmarks,
+    contacts,
+    downloads,
+    favorites,
+    featured,
+    history,
+    more,
+    "most-recent",
+    "most-viewed",
+    recents,
+    search,
+    "top-rated"
+}
+```
+Tab点击事件
+
+```javascript
+<TabBarIOS.Item
+            title='设置'
+            systemIcon='more'
+            selected={this.state.selectedTab === 'setting'}
+            onPress={()=>{this.state.selectedTab = 'setting'}}>
+            <MyProfile />
+          </TabBarIOS.Item>
+```
+
+在onPress中使用=改变state的值没起作用，用`setState`方法才可以
+
+```javascript
+<TabBarIOS.Item
+            title='设置'
+            systemIcon='more'
+            selected={this.state.selectedTab === 'setting'}
+            onPress={()=>{this.setState({selectedTab:'setting'})}}>
+            <MyProfile />
+          </TabBarIOS.Item>
+```
+

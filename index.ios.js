@@ -12,7 +12,8 @@ import {
   View,
   Image,
   ListView,
-  RefreshControl
+  RefreshControl,
+  TabBarIOS
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator'
 
@@ -145,15 +146,47 @@ class Home extends Component{
 
 }
 
+class MyProfile extends Component{
+
+  render(){
+    return(
+        <View style={styles.container}>
+          <Text style={styles.title}>Profile</Text>
+        </View>
+    );
+  }
+}
+
 export default class Meizi extends Component {
 
+  constructor(props){
+    super(props);
+    this.state={
+      selectedTab:'meizi',
+    }
+  }
+
   render() {
-
     return (
+      <TabBarIOS
+        unselectedTintColor='gray'
+        tintColor='blue'>
+          <TabBarIOS.Item
+            title='妹子'
+            systemIcon='contacts'
+            selected={this.state.selectedTab === 'meizi'}
+            onPress={()=>{this.setState({selectedTab:'meizi'})}}>
+            <Home />
+          </TabBarIOS.Item>
+          <TabBarIOS.Item
+            title='设置'
+            systemIcon='more'
+            selected={this.state.selectedTab === 'setting'}
+            onPress={()=>{this.setState({selectedTab:'setting'})}}>
+            <MyProfile />
+          </TabBarIOS.Item>
+      </TabBarIOS>
 
-      <View style={styles.container}>
-        <Home />
-      </View>
     );
   }
 }
