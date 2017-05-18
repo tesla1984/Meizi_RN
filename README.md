@@ -58,11 +58,10 @@ this.state.refreshing = true;
 
 ### bind(this)
 [React/React Native 的ES5 ES6写法对照表](http://bbs.reactnative.cn/topic/15/react-react-native-%E7%9A%84es5-es6%E5%86%99%E6%B3%95%E5%AF%B9%E7%85%A7%E8%A1%A8)
->把方法作为回调提供
-
->很多习惯于ES6的用户反而不理解在ES5下可以这么做：
-
->```//ES5
+>**把方法作为回调提供**   
+很多习惯于ES6的用户反而不理解在ES5下可以这么做：   
+>
+```//ES5
 var PostInfo = React.createClass({
     handleOptionsButtonClick: function(e) {
         // Here, 'this' refers to the component instance.
@@ -77,9 +76,8 @@ var PostInfo = React.createClass({
     },
 });
 ```
-在ES5下，React.createClass会把所有的方法都bind一遍，这样可以提交到任意的地方作为回调函数，而this不会变化。但官方现在逐步认为这反而是不标准、不易理解的。
-
->在ES6下，你需要通过bind来绑定this引用，或者使用箭头函数（它会绑定当前scope的this引用）来调用
+>在ES5下，React.createClass会把所有的方法都bind一遍，这样可以提交到任意的地方作为回调函数，而this不会变化。但官方现在逐步认为这反而是不标准、不易理解的。
+在ES6下，你需要通过bind来绑定this引用，或者使用箭头函数（它会绑定当前scope的this引用）来调用
 
 >```//ES6
 class PostInfo extends React.Component
@@ -103,11 +101,9 @@ class PostInfo extends React.Component
 ### listview上拉加载更多
 [ListView介绍](http://reactnative.cn/docs/0.44/listview.html#content)   
 >`onEndReached` function 
-
 >当所有的数据都已经渲染过，并且列表被滚动到距离最底部不足onEndReachedThreshold个像素的距离时调用。原生的滚动事件会被作为参数传递。译注：当第一次渲染时，如果数据不足一屏（比如初始值是空的），这个事件也会被触发，请自行做标记过滤。
 
 >`onEndReachedThreshold` number 
-
 >调用onEndReached之前的临界值，单位是像素。
 
 根据上面listview两个属性实现加载更多   
