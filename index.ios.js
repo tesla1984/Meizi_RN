@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
+  ListView
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator'
 
@@ -25,6 +26,12 @@ class Home extends Component{
 
     this.state = {
       meizis:null,
+      dataSource: new ListView.DataSource(
+        {
+          rowHasChanged:(row1,row2)=>row1!=row2,
+        }
+      ),
+      loaded:false,
     };
   }
 
@@ -32,7 +39,8 @@ class Home extends Component{
       meiziRequest.requestWithPage('All',1)
         .then((results)=>{
             this.setState({
-              meizis:results,
+              loaded:true,
+              dataSource:this.state.dataSource.cloneWithRows(results),
             });
         })
         .catch((error)=>{
@@ -41,11 +49,12 @@ class Home extends Component{
   }
 
   render() {
-     if(!this.state.meizis){
+     if(!this.state.loaded){
        return this._renderLoadingView();
      }
 
-     return this._renderMeiziView(this.state.meizis[0]);
+     //return this._renderMeiziView(this.state.meizis[0]);
+     return this._renderMeizisView();
   }
 
   _renderLoadingView(){
@@ -58,15 +67,18 @@ class Home extends Component{
 
   _renderMeizisView(){
     return(
-      <View style={style.container}>
-
+      <View style={styles.container}>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this._renderMeiziView}
+          style={styles.listView} />
       </View>
     );
   }
 
   _renderMeiziView(meizi){
     return(
-      <View style={styles.container}>
+      <View style={styles.rowContainer}>
         <Image source={{uri:meizi.thumb_url}}
           style={styles.thumbnail} />
         <Text style={styles.title}>{meizi.title}</Text>
@@ -96,6 +108,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
+  rowContainer:{
+    flex:1,
+    flexDirection:'row',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    padding:10,
+  },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
@@ -107,13 +126,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   title: {
-         fontSize: 12,
+         fontSize: 18,
          textAlign: 'center',
+         marginLeft:10,
      },
      thumbnail: {
          width: 100,
          height: 100,
      },
+     listView: {
+    paddingTop: 20,
+    backgroundColor: '#F5FCFF',
+  },
 });
 
 AppRegistry.registerComponent('Meizi', () => Meizi);
