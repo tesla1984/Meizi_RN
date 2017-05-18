@@ -11,7 +11,8 @@ import {
   Text,
   View,
   Image,
-  ListView
+  ListView,
+  RefreshControl
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator'
 
@@ -20,6 +21,8 @@ import MeiziRequest from './js/MeiziRequest.js'
 var meiziRequest = new MeiziRequest();
 
 class Home extends Component{
+
+  _page = 0;
 
   constructor(props) {
     super(props);
@@ -32,6 +35,7 @@ class Home extends Component{
         }
       ),
       loaded:false,
+      refreshing:false,
     };
   }
 
@@ -71,9 +75,36 @@ class Home extends Component{
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this._renderMeiziView}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+              enable={true} />
+          }
           style={styles.listView} />
       </View>
     );
+  }
+
+  _onRefresh(){
+      this._page = 1;
+      //this.setState({refreshing:true});
+      this.state.refreshing = true;
+      meiziRequest.requestWithPage('All',this._page)
+        .then((results)=>{
+            this.setState({
+              refreshing:false,
+              dataSource:this.state.dataSource.cloneWithRows(results),
+            });
+        })
+        .catch((error)=>{
+          this.state.refreshing=false;
+        });
+
+  }
+
+  _onLoadMore(){
+
   }
 
   _renderMeiziView(meizi){
