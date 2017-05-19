@@ -11,11 +11,13 @@ import {
 import MeiziRequest from './MeiziRequest.js'
 
 var meiziRequest = new MeiziRequest();
+var map = new Map();
 
 export default class Home extends Component{
 
   _data = new Array();
   _page = 1;
+	_category = 'All';
 
   constructor(props) {
     super(props);
@@ -30,10 +32,18 @@ export default class Home extends Component{
       loaded:false,
       refreshing:false,
     };
+
+		map.set('All','所有');
+		map.set('DaXiong','大胸');
+		map.set('QiaoTun','翘臀');
+		map.set('HeiSi','黑丝');
+		map.set('MeiTui','美腿');
+		map.set('QingXin','清新');
+		map.set('ZaHui','杂烩');
   }
 
   componentDidMount(){
-      meiziRequest.requestWithPage('All',1)
+      meiziRequest.requestWithPage(this._category,1)
         .then((results)=>{
             this.setState({
               loaded:true,
@@ -65,6 +75,11 @@ export default class Home extends Component{
   _renderMeizisView(){
     return(
       <View style={styles.container}>
+
+
+					<Text style={styles.header}>{map.get(this._category)}</Text>
+
+
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this._renderMeiziView}
@@ -140,7 +155,7 @@ export default class Home extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+		flex:1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
@@ -150,23 +165,27 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding:10,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    padding:5,
   },
   title: {
          fontSize: 15,
          textAlign: 'center',
          marginLeft:10,
      },
+		 headerContainer:{
+			 flex:1,
+			 flexDirection:'row',
+			 alignItems:'center',
+			 padding:5,
+			 height:50,
+			 backgroundColor:'#7ec235',
+		 },
+		 header: {
+						fontSize: 15,
+						textAlign: 'center',
+						marginTop:20,
+						padding:10,
+				},
   thumbnail: {
          width: 100,
          height: 100,

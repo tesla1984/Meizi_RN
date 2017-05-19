@@ -174,3 +174,14 @@ Tab点击事件
           </TabBarIOS.Item>
 ```
 
+
+
+### 添加分类选择
+
+[react-native 之布局篇](https://segmentfault.com/a/1190000002658374)
+
+
+
+使用map保存分类信息
+
+[ES6 中的 Set、Map 和 WeakMap](https://imququ.com/post/set-map-weakmap-in-es6.html)
