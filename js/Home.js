@@ -5,7 +5,9 @@ import {
   View,
   Image,
   ListView,
-  RefreshControl
+  RefreshControl,
+	Picker,
+	TouchableHighlight
 } from 'react-native';
 
 import MeiziRequest from './MeiziRequest.js'
@@ -17,13 +19,11 @@ export default class Home extends Component{
 
   _data = new Array();
   _page = 1;
-	_category = 'All';
 
   constructor(props) {
     super(props);
 
     this.state = {
-      meizis:null,
       dataSource: new ListView.DataSource(
         {
           rowHasChanged:(row1,row2)=>row1!=row2,
@@ -31,6 +31,7 @@ export default class Home extends Component{
       ),
       loaded:false,
       refreshing:false,
+			category:'All',
     };
 
 		map.set('All','所有');
@@ -43,7 +44,7 @@ export default class Home extends Component{
   }
 
   componentDidMount(){
-      meiziRequest.requestWithPage(this._category,1)
+      meiziRequest.requestWithPage(this.state.category,1)
         .then((results)=>{
             this.setState({
               loaded:true,
@@ -64,6 +65,9 @@ export default class Home extends Component{
      return this._renderMeizisView();
   }
 
+	/*
+	 * 加载中界面
+	 */
   _renderLoadingView(){
     return(
       <View style={styles.container} >
@@ -72,13 +76,45 @@ export default class Home extends Component{
     );
   }
 
+	/*
+	 * Picker界面
+	 */
+  _renderPicker(){
+		return(
+			<Picker selectedValue={this.state.category}
+					style={{width:200}}
+					mode={'dropdown'}
+					onValueChange={(cat) => this.setState({category:cat})}>
+					<Picker.Item label='所有' value='All' />
+					<Picker.Item label='大胸' value='DaXiong' />
+					<Picker.Item label='翘臀' value='QiaoTun' />
+					<Picker.Item label='黑丝' value='HeiSi' />
+					<Picker.Item label='美腿' value='MeiTui' />
+					<Picker.Item label='清新' value='QingXin' />
+					<Picker.Item label='杂烩' value='ZaHui' />
+
+			</Picker>
+		)
+	}
+
+	_renderPickerItem(key){
+		return(
+			<Picker.Item label={map.get(key)} value={key} />
+		)
+	}
+
+	/*
+	 * 数据界面 listview
+	 */
   _renderMeizisView(){
     return(
       <View style={styles.container}>
 
+				<TouchableHighlight onPress={this._selectCategory.bind(this)}>
+					<Text style={styles.header}>{map.get(this.state.category)}</Text>
+				</TouchableHighlight>
 
-					<Text style={styles.header}>{map.get(this._category)}</Text>
-
+				{this._renderPicker()}
 
         <ListView
           dataSource={this.state.dataSource}
@@ -92,37 +128,44 @@ export default class Home extends Component{
           onEndReached={this._onLoadMore.bind(this)}
           onEndReachedThreshold={0}
           style={styles.listView} />
+
       </View>
+
     );
   }
 
+	/*
+	 * 类型点击事件
+	 */
+	_selectCategory(){
+
+	}
+
+	/*
+	 * RefreshControl刷新事件
+	 */
   _onRefresh(){
       this._page = 1;
-      // //this.setState({refreshing:true});
-      // this.state.refreshing = true;
-      // meiziRequest.requestWithPage('All',this._page)
-      //   .then((results)=>{
-      //       this.setState({
-      //         refreshing:false,
-      //         dataSource:this.state.dataSource.cloneWithRows(results),
-      //       });
-      //   })
-      //   .catch((error)=>{
-      //     this.state.refreshing=false;
-      //   });
+
       this._loadData();
   }
 
+	/*
+	 * 加载更多事件
+	 */
   _onLoadMore(){
     this._page++;
     this._loadData();
   }
 
+	/*
+	 * 加载数据
+	 */
   _loadData(){
     if(this._page === 1){
       this.state.refreshing = true;
     }
-    meiziRequest.requestWithPage('All',this._page)
+    meiziRequest.requestWithPage(this.state.category,this._page)
       .then((results)=>{
           if(this._page === 1){
             this._data.length = 0;
@@ -140,6 +183,9 @@ export default class Home extends Component{
       });
   }
 
+	/*
+	 * ListView item界面
+	 */
   _renderMeiziView(meizi){
     return(
       <View style={styles.rowContainer}>

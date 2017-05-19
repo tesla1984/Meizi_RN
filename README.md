@@ -185,3 +185,56 @@ Tab点击事件
 使用map保存分类信息
 
 [ES6 中的 Set、Map 和 WeakMap](https://imququ.com/post/set-map-weakmap-in-es6.html)
+
+
+
+```javascript
+  _renderPicker(){
+		return(
+			<Picker selectedValue={this.state.category}
+					style={{width:200}}
+					mode={'dropdown'}
+					onValueChange={(cat) => this.setState({category:cat})}>
+					<Picker.Item label='所有' value='All' />
+					<Picker.Item label='大胸' value='DaXiong' />
+					<Picker.Item label='翘臀' value='QiaoTun' />
+					<Picker.Item label='黑丝' value='HeiSi' />
+					<Picker.Item label='美腿' value='MeiTui' />
+					<Picker.Item label='清新' value='QingXin' />
+					<Picker.Item label='杂烩' value='ZaHui' />
+			</Picker>
+		)
+	}
+
+  _renderMeizisView(){
+    return(
+      <View style={styles.container}>
+
+				<TouchableHighlight onPress={this._selectCategory.bind(this)}>
+					<Text style={styles.header}>{map.get(this.state.category)}</Text>
+				</TouchableHighlight>
+				{this._renderPicker()}
+
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this._renderMeiziView}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+              enable={true} />
+          }
+          onEndReached={this._onLoadMore.bind(this)}
+          onEndReachedThreshold={0}
+          style={styles.listView} />
+      </View>
+    );
+  }
+```
+
+将pIcker的绘制放到`_renderPicker()`方法中，一方面将结构清晰化，另一方面可以在`_renderPicker()`中可以做一些控制，比方说点击按钮后picker才显示，可以设置一个state值，在_renderPicker中根据该state判断是否绘制picker
+
+> **注意事项**
+>
+> 1. `{this._renderPicker()}` 这里的()不能少
+> 2. `_renderPicker(){}`方法中记得要有`return`
